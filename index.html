@@ -1,0 +1,577 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>The Remix Fashion Store</title>
+    <style>
+      .product-img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+}
+      :root {
+        --primary: #222222;
+        --accent: #d97706;
+        --bg: #f9fafb;
+        --card-bg: #ffffff;
+        --text-main: #1f2937;
+        --text-muted: #6b7280;
+      }
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+      }
+      body {
+        background-color: var(--bg);
+        color: var(--text-main);
+        line-height: 1.6;
+      }
+
+      header {
+        background-color: var(--primary);
+        color: white;
+        padding: 2rem 1rem;
+        text-align: center;
+        position: relative;
+      }
+      header h1 {
+        font-size: 2.5rem;
+        letter-spacing: 1px;
+        margin-bottom: 0.5rem;
+      }
+      header p {
+        color: #d1d5db;
+        font-size: 1.1rem;
+      }
+
+      .cart-btn {
+        position: absolute;
+        top: 2rem;
+        right: 2rem;
+        background: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.6rem 1.2rem;
+        border-radius: 4px;
+        font-weight: bold;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+      .cart-btn:hover {
+        background-color: #b45309;
+      }
+
+      nav {
+        background-color: #374151;
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        padding: 1rem;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+      }
+      nav a {
+        color: white;
+        text-decoration: none;
+        font-weight: 600;
+        transition: color 0.2s;
+      }
+      nav a:hover {
+        color: var(--accent);
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+      }
+      section {
+        margin-bottom: 3rem;
+      }
+      h2.section-title {
+        font-size: 1.8rem;
+        margin-bottom: 1.5rem;
+        border-bottom: 2px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 2rem;
+      }
+      .card {
+        background: var(--card-bg);
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        transition: transform 0.2s;
+      }
+      .card:hover {
+        transform: translateY(-4px);
+      }
+      .card-img {
+        width: 100%;
+        height: 200px;
+        background-color: #e5e7eb;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-muted);
+        font-weight: 600;
+      }
+      .card-body {
+        padding: 1.5rem;
+      }
+      .card-title {
+        font-size: 1.25rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+      }
+      .card-desc {
+        color: var(--text-muted);
+        font-size: 0.95rem;
+        margin-bottom: 1rem;
+      }
+      .card-footer {
+        padding: 0 1.5rem 1.5rem 1.5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .card-price {
+        font-size: 1.2rem;
+        font-weight: bold;
+        color: var(--accent);
+      }
+
+      .btn-add {
+        background-color: var(--primary);
+        color: white;
+        border: none;
+        padding: 0.5rem 1rem;
+        border-radius: 4px;
+        cursor: pointer;
+        font-weight: 600;
+      }
+      .btn-add:hover {
+        background-color: var(--accent);
+      }
+
+      /* Cart Sidebar Modal */
+      .cart-modal {
+        position: fixed;
+        top: 0;
+        right: -400px;
+        width: 400px;
+        height: 100%;
+        background: white;
+        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
+        transition: right 0.3s ease;
+        z-index: 1000;
+        display: flex;
+        flex-direction: column;
+      }
+      .cart-modal.open {
+        right: 0;
+      }
+      .cart-header {
+        padding: 1.5rem;
+        background: var(--primary);
+        color: white;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .close-cart {
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+      }
+      .cart-items {
+        padding: 1.5rem;
+        flex-grow: 1;
+        overflow-y: auto;
+      }
+      .cart-item {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        border-bottom: 1px solid #e5e7eb;
+        padding-bottom: 0.5rem;
+      }
+      .cart-footer-modal {
+        padding: 1.5rem;
+        background: #f3f4f6;
+        border-top: 1px solid #e5e7eb;
+      }
+      .total-display {
+        font-size: 1.2rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        display: flex;
+        justify-content: space-between;
+      }
+
+      .checkout-section {
+        background: white;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        max-width: 600px;
+        margin: 0 auto;
+      }
+      .form-group {
+        margin-bottom: 1.25rem;
+      }
+      .form-group label {
+        display: block;
+        font-weight: 600;
+        margin-bottom: 0.5rem;
+      }
+      .form-group input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 4px;
+        font-size: 1rem;
+      }
+      .btn-primary {
+        background-color: var(--accent);
+        color: white;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 4px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.2s;
+      }
+      .btn-primary:hover {
+        background-color: #b45309;
+      }
+
+      footer {
+        text-align: center;
+        padding: 2rem;
+        background-color: var(--primary);
+        color: #9ca3af;
+        margin-top: 4rem;
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>The Remix Fashion Store</h1>
+      <p>Your premier destination for modern clothes and footwear</p>
+      <button class="cart-btn" onclick="toggleCart()">
+        🛒 Cart (<span id="cart-count">0</span>)
+      </button>
+    </header>
+
+    <nav>
+      <a href="#clothes">Clothes</a>
+      <a href="#shoes">Shoes</a>
+      <a href="#checkout">Checkout</a>
+    </nav>
+
+    <!-- Slide-out Cart Drawer -->
+    <div class="cart-modal" id="cartModal">
+      <div class="cart-header">
+        <h3>Your Shopping Cart</h3>
+        <button class="close-cart" onclick="toggleCart()">&times;</button>
+      </div>
+      <div class="cart-items" id="cartItemsContainer">
+        <p style="color: var(--text-muted); text-align: center">
+          Your cart is empty.
+        </p>
+      </div>
+      <div class="cart-footer-modal">
+        <div class="total-display">
+          <span>Total:</span>
+          <span id="cartTotal">$0.00</span>
+        </div>
+        <button class="btn-primary" onclick="scrollToCheckout()">
+          Proceed to Checkout
+        </button>
+      </div>
+    </div>
+
+    <div class="container">
+      <!-- Clothes Collection -->
+      <section id="clothes">
+        <h2 class="section-title">Clothes Collection</h2>
+        <div class="grid">
+          <div class="card">
+            <img src="assets/remix1.jpeg" width="380" alt="image" />
+            <div class="card-body">
+              <div class="card-title">Oversized Graphic Hoodie</div>
+              <div class="card-desc">
+                Cozy fleece-lined hoodie featuring a modern streetwear back
+                print. Sizes: S, M, L, XL.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$52.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Oversized Graphic Hoodie', 52.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <img src="assets/remix2.jpeg" width="280" alt="image" />
+            <div class="card-body">
+              <div class="card-title">Relaxed-Fit Pleated Trousers</div>
+              <div class="card-desc">
+                Versatile stretch-cotton trousers tailored for a relaxed
+                silhouette. Sizes: 30, 32, 34, 36.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$45.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Relaxed-Fit Pleated Trousers', 45.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <img src="assets/remix3.jpeg" width="210" alt="image" />
+            <div class="card-body">
+              <div class="card-title">Asymmetrical Midi Wrap Skirt</div>
+              <div class="card-desc">
+                Elegant high-waisted wrap skirt with a smooth contour waistband.
+                Sizes: S, M, L.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$38.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Asymmetrical Midi Wrap Skirt', 38.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Shoes Collection -->
+      <section id="shoes">
+        <h2 class="section-title">Shoes Collection</h2>
+        <div class="grid">
+          <div class="card">
+            <div class="card-img">Sneakers Image</div>
+            <div class="card-body">
+              <div class="card-title">Retro Court Low-Top Sneakers</div>
+              <div class="card-desc">
+                Clean leather design offering a sleek look with all-day arch
+                support. Sizes: 7, 8, 9, 10, 11.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$68.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Retro Court Low-Top Sneakers', 68.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img">Loafers Image</div>
+            <div class="card-body">
+              <div class="card-title">Chunky Lug-Sole Loafers</div>
+              <div class="card-desc">
+                Contemporary slip-on dress shoes crafted from soft textured
+                leather. Sizes: 8, 9, 10, 12.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$75.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Chunky Lug-Sole Loafers', 75.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-img">Heels Image</div>
+            <div class="card-body">
+              <div class="card-title">Strappy Minimalist Block Heels</div>
+              <div class="card-desc">
+                Chic and stable block-heel sandals ideal for evening and daytime
+                events. Sizes: 6, 7, 8, 9.
+              </div>
+            </div>
+            <div class="card-footer">
+              <div class="card-price">$60.00</div>
+              <button
+                class="btn-add"
+                onclick="addToCart('Strappy Minimalist Block Heels', 60.0)"
+              >
+                Add to Cart
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Checkout Section -->
+      <section id="checkout">
+        <div class="checkout-section">
+          <h2 class="section-title" style="border: none; margin-bottom: 1rem">
+            Complete Your Order
+          </h2>
+          <form id="orderForm" onsubmit="handleCheckout(event)">
+            <div class="form-group">
+              <label>Full Name</label>
+              <input type="text" id="name" placeholder="John Doe" required />
+            </div>
+            <div class="form-group">
+              <label>Email Address</label>
+              <input
+                type="email"
+                id="email"
+                placeholder="john@example.com"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Phone Number</label>
+              <input
+                type="tel"
+                id="phone"
+                placeholder="+1 (555) 000-0000"
+                required
+              />
+            </div>
+            <div class="form-group">
+              <label>Shipping Address</label>
+              <input
+                type="text"
+                id="address"
+                placeholder="Street, City, Zip Code"
+                required
+              />
+            </div>
+            <button type="submit" class="btn-primary">Submit Order</button>
+          </form>
+        </div>
+      </section>
+    </div>
+
+    <footer>
+      <p>&copy; 2026 The Remix Fashion Store. All rights reserved.</p>
+    </footer>
+
+    <!-- JavaScript functionality -->
+    <script>
+      let cart = [];
+
+      function toggleCart() {
+        document.getElementById("cartModal").classList.toggle("open");
+      }
+
+      function scrollToCheckout() {
+        toggleCart();
+        document
+          .getElementById("checkout")
+          .scrollIntoView({ behavior: "smooth" });
+      }
+
+      function addToCart(name, price) {
+        const existingItem = cart.find((item) => item.name === name);
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({ name, price, quantity: 1 });
+        }
+        updateCartUI();
+
+        // Subtle feedback alert
+        alert(`${name} has been added to your cart!`);
+      }
+
+      function removeFromCart(name) {
+        cart = cart.filter((item) => item.name !== name);
+        updateCartUI();
+      }
+
+      function updateCartUI() {
+        const cartCount = document.getElementById("cart-count");
+        const cartItemsContainer =
+          document.getElementById("cartItemsContainer");
+        const cartTotal = document.getElementById("cartTotal");
+
+        let totalCount = 0;
+        let totalPrice = 0;
+
+        if (cart.length === 0) {
+          cartItemsContainer.innerHTML =
+            '<p style="color: var(--text-muted); text-align: center;">Your cart is empty.</p>';
+        } else {
+          cartItemsContainer.innerHTML = "";
+          cart.forEach((item) => {
+            totalCount += item.quantity;
+            totalPrice += item.price * item.quantity;
+
+            cartItemsContainer.innerHTML += `
+                        <div class="cart-item">
+                            <div>
+                                <strong>${item.name}</strong><br>
+                                <small>$${item.price.toFixed(2)} x ${item.quantity}</small>
+                            </div>
+                            <button onclick="removeFromCart('${item.name}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove</button>
+                        </div>
+                    `;
+          });
+        }
+
+        cartCount.innerText = totalCount;
+        cartTotal.innerText = `$${totalPrice.toFixed(2)}`;
+      }
+
+      function handleCheckout(event) {
+        event.preventDefault();
+
+        if (cart.length === 0) {
+          alert("Your cart is empty! Please add items before checking out.");
+          return;
+        }
+
+        const name = document.getElementById("name").value;
+        alert(
+          `Thank you for your order, ${name}! Your purchase from The Remix Fashion Store has been successfully placed.`,
+        );
+
+        // Reset form and cart
+        cart = [];
+        updateCartUI();
+        document.getElementById("orderForm").reset();
+      }
+    </script>
+  </body>
+</html>
