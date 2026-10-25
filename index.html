@@ -1,4 +1,4 @@
-<!doctype html>
+482<!doctype html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
@@ -447,6 +447,7 @@
           </h2>
          <form id="orderForm" action="https://formsubmit.co/abbey4sure16@yahoo.com" method="POST">
 <input type="hidden" name="_subject" value="New Order from The Remix Fashion Store!">
+           <input type="hidden" name="_captcha" value="false">
             <div class="form-group">
               <label>Full Name</label>
               <input type="text" id="name" placeholder="John Doe" required />
@@ -556,12 +557,23 @@
       }
 
       function handleCheckout(event) {
+    if (cart.length === 0) {
         event.preventDefault();
+        alert("Your cart is empty! Please add items before checking out.");
+        return;
+    }
 
-        if (cart.length === 0) {
-          alert("Your cart is empty! Please add items before checking out.");
-          return;
-        }
+    // This creates a neat text summary of everything in their cart and adds it as a hidden field before submitting
+    let cartSummary = cart.map(item => `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
+    let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+
+    // Create a hidden input dynamically to send the cart items to your email
+    let hiddenInput = document.createElement('input');
+    hiddenInput.type = 'hidden';
+    hiddenInput.name = 'Order Summary';
+    hiddenInput.value = `${cartSummary}\n\nTotal Price: $${totalAmount}`;
+    document.getElementById('orderForm').appendChild(hiddenInput);
+}
 
         const name = document.getElementById("name").value;
         alert(
