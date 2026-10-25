@@ -1,590 +1,217 @@
-482<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>The Remix Fashion Store</title>
     <style>
-      .product-img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-}
-      :root {
-        --primary: #222222;
-        --accent: #d97706;
-        --bg: #f9fafb;
-        --card-bg: #ffffff;
-        --text-main: #1f2937;
-        --text-muted: #6b7280;
-      }
-      * {
-        box-sizing: border-box;
-        margin: 0;
-        padding: 0;
-        font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
-      }
-      body {
-        background-color: var(--bg);
-        color: var(--text-main);
-        line-height: 1.6;
-      }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: #f9fafb; color: #1f2937; line-height: 1.6; }
+        header { background: #111827; color: white; padding: 1.5rem 2rem; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 100; }
+        header h1 { font-size: 1.5rem; letter-spacing: 1px; }
+        nav a { color: white; text-decoration: none; margin-left: 1.5rem; font-weight: 500; cursor: pointer; }
+        nav a:hover { color: #9ca3af; }
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('remix1.jpeg') center/cover no-repeat; color: white; text-align: center; padding: 5rem 1rem; }
+        .hero h2 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
+        h2.section-title { font-size: 1.8rem; margin-bottom: 1.5rem; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.5rem; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 2rem; margin-bottom: 3rem; }
+        .card { background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 6px rgba(0,0,0,0.05); transition: transform 0.2s; display: flex; flex-direction: column; justify-content: space-between; }
+        .card:hover { transform: translateY(-4px); }
+        .card img { width: 100%; height: 250px; object-fit: cover; }
+        .card-content { padding: 1.5rem; }
+        .card-content h3 { font-size: 1.2rem; margin-bottom: 0.5rem; }
+        .card-content p { color: #4b5563; font-size: 0.9rem; margin-bottom: 1rem; }
+        .price { font-size: 1.1rem; font-weight: bold; color: #111827; margin-bottom: 1rem; display: block; }
+        .btn-primary { background: #111827; color: white; border: none; padding: 0.75rem 1.5rem; border-radius: 6px; cursor: pointer; width: 100%; font-weight: 600; transition: background 0.2s; }
+        .btn-primary:hover { background: #374151; }
+        
+        /* Cart & Checkout Section */
+        .cart-section, .checkout-section { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 3rem; }
+        .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label { display: block; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.9rem; }
+        .form-group input { width: 100%; padding: 0.75rem; border: 1px solid #d1d5db; border-radius: 6px; }
+        
+        /* Bank Info Box */
+        .bank-box { background: #f3f4f6; border-left: 4px solid #111827; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
+        .bank-box h4 { margin-bottom: 0.5rem; color: #111827; }
+        .bank-box p { font-size: 0.95rem; color: #374151; margin-bottom: 0.25rem; }
 
-      header {
-        background-color: var(--primary);
-        color: white;
-        padding: 2rem 1rem;
-        text-align: center;
-        position: relative;
-      }
-      header h1 {
-        font-size: 2.5rem;
-        letter-spacing: 1px;
-        margin-bottom: 0.5rem;
-      }
-      header p {
-        color: #d1d5db;
-        font-size: 1.1rem;
-      }
-
-      .cart-btn {
-        position: absolute;
-        top: 2rem;
-        right: 2rem;
-        background: var(--accent);
-        color: white;
-        border: none;
-        padding: 0.6rem 1.2rem;
-        border-radius: 4px;
-        font-weight: bold;
-        cursor: pointer;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-      }
-      .cart-btn:hover {
-        background-color: #b45309;
-      }
-
-      nav {
-        background-color: #374151;
-        display: flex;
-        justify-content: center;
-        gap: 2rem;
-        padding: 1rem;
-        position: sticky;
-        top: 0;
-        z-index: 100;
-      }
-      nav a {
-        color: white;
-        text-decoration: none;
-        font-weight: 600;
-        transition: color 0.2s;
-      }
-      nav a:hover {
-        color: var(--accent);
-      }
-
-      .container {
-        max-width: 1200px;
-        margin: 2rem auto;
-        padding: 0 1rem;
-      }
-      section {
-        margin-bottom: 3rem;
-      }
-      h2.section-title {
-        font-size: 1.8rem;
-        margin-bottom: 1.5rem;
-        border-bottom: 2px solid #e5e7eb;
-        padding-bottom: 0.5rem;
-      }
-
-      .grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 2rem;
-      }
-      .card {
-        background: var(--card-bg);
-        border-radius: 8px;
-        overflow: hidden;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: transform 0.2s;
-      }
-      .card:hover {
-        transform: translateY(-4px);
-      }
-      .card-img {
-        width: 100%;
-        height: 200px;
-        background-color: #e5e7eb;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: var(--text-muted);
-        font-weight: 600;
-      }
-      .card-body {
-        padding: 1.5rem;
-      }
-      .card-title {
-        font-size: 1.25rem;
-        font-weight: bold;
-        margin-bottom: 0.5rem;
-      }
-      .card-desc {
-        color: var(--text-muted);
-        font-size: 0.95rem;
-        margin-bottom: 1rem;
-      }
-      .card-footer {
-        padding: 0 1.5rem 1.5rem 1.5rem;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .card-price {
-        font-size: 1.2rem;
-        font-weight: bold;
-        color: var(--accent);
-      }
-
-      .btn-add {
-        background-color: var(--primary);
-        color: white;
-        border: none;
-        padding: 0.5rem 1rem;
-        border-radius: 4px;
-        cursor: pointer;
-        font-weight: 600;
-      }
-      .btn-add:hover {
-        background-color: var(--accent);
-      }
-
-      /* Cart Sidebar Modal */
-      .cart-modal {
-        position: fixed;
-        top: 0;
-        right: -400px;
-        width: 400px;
-        height: 100%;
-        background: white;
-        box-shadow: -4px 0 15px rgba(0, 0, 0, 0.1);
-        transition: right 0.3s ease;
-        z-index: 1000;
-        display: flex;
-        flex-direction: column;
-      }
-      .cart-modal.open {
-        right: 0;
-      }
-      .cart-header {
-        padding: 1.5rem;
-        background: var(--primary);
-        color: white;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-      }
-      .close-cart {
-        background: none;
-        border: none;
-        color: white;
-        font-size: 1.5rem;
-        cursor: pointer;
-      }
-      .cart-items {
-        padding: 1.5rem;
-        flex-grow: 1;
-        overflow-y: auto;
-      }
-      .cart-item {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1rem;
-        border-bottom: 1px solid #e5e7eb;
-        padding-bottom: 0.5rem;
-      }
-      .cart-footer-modal {
-        padding: 1.5rem;
-        background: #f3f4f6;
-        border-top: 1px solid #e5e7eb;
-      }
-      .total-display {
-        font-size: 1.2rem;
-        font-weight: bold;
-        margin-bottom: 1rem;
-        display: flex;
-        justify-content: space-between;
-      }
-
-      .checkout-section {
-        background: white;
-        padding: 2rem;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        max-width: 600px;
-        margin: 0 auto;
-      }
-      .form-group {
-        margin-bottom: 1.25rem;
-      }
-      .form-group label {
-        display: block;
-        font-weight: 600;
-        margin-bottom: 0.5rem;
-      }
-      .form-group input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid #d1d5db;
-        border-radius: 4px;
-        font-size: 1rem;
-      }
-      .btn-primary {
-        background-color: var(--accent);
-        color: white;
-        border: none;
-        padding: 0.75rem 1.5rem;
-        font-size: 1rem;
-        font-weight: bold;
-        border-radius: 4px;
-        cursor: pointer;
-        width: 100%;
-        transition: background-color 0.2s;
-      }
-      .btn-primary:hover {
-        background-color: #b45309;
-      }
-
-      footer {
-        text-align: center;
-        padding: 2rem;
-        background-color: var(--primary);
-        color: #9ca3af;
-        margin-top: 4rem;
-      }
+        footer { background: #111827; color: white; text-align: center; padding: 1.5rem; margin-top: 4rem; font-size: 0.9rem; }
     </style>
-  </head>
-  <body>
+</head>
+<body>
+
     <header>
-      <h1>The Remix Fashion Store</h1>
-      <p>Your premier destination for modern clothes and footwear</p>
-      <button class="cart-btn" onclick="toggleCart()">
-        🛒 Cart (<span id="cart-count">0</span>)
-      </button>
+        <h1>The Remix Fashion Store</h1>
+        <nav>
+            <a href="#products">Shop</a>
+            <a href="#cart">Cart (<span id="cartCount">0</span>)</a>
+            <a href="#checkout">Checkout</a>
+        </nav>
     </header>
 
-    <nav>
-      <a href="#clothes">Clothes</a>
-      <a href="#shoes">Shoes</a>
-      <a href="#checkout">Checkout</a>
-    </nav>
-
-    <!-- Slide-out Cart Drawer -->
-    <div class="cart-modal" id="cartModal">
-      <div class="cart-header">
-        <h3>Your Shopping Cart</h3>
-        <button class="close-cart" onclick="toggleCart()">&times;</button>
-      </div>
-      <div class="cart-items" id="cartItemsContainer">
-        <p style="color: var(--text-muted); text-align: center">
-          Your cart is empty.
-        </p>
-      </div>
-      <div class="cart-footer-modal">
-        <div class="total-display">
-          <span>Total:</span>
-          <span id="cartTotal">$0.00</span>
-        </div>
-        <button class="btn-primary" onclick="scrollToCheckout()">
-          Proceed to Checkout
-        </button>
-      </div>
+    <div class="hero">
+        <h2>Modern Clothes & Footwear</h2>
+        <p>Your premier destination for streetwear and premium style.</p>
     </div>
 
-    <div class="container">
-      <!-- Clothes Collection -->
-      <section id="clothes">
-        <h2 class="section-title">Clothes Collection</h2>
-        <div class="grid">
-          <div class="card">
-            <img src="remix1.jpeg" width="380" alt="image" />
-            <div class="card-body">
-              <div class="card-title">Oversized Graphic Hoodie</div>
-              <div class="card-desc">
-                Cozy fleece-lined hoodie featuring a modern streetwear back
-                print. Sizes: S, M, L, XL.
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">$52.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Oversized Graphic Hoodie', 52.0)"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <div class="card">
-            <img src="remix2.jpeg" width="280" alt="image" />
-            <div class="card-body">
-              <div class="card-title">Relaxed-Fit Pleated Trousers</div>
-              <div class="card-desc">
-                Versatile stretch-cotton trousers tailored for a relaxed
-                silhouette. Sizes: 30, 32, 34, 36.
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">$45.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Relaxed-Fit Pleated Trousers', 45.0)"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <div class="card">
-            <img src="remix3.jpeg" width="210" alt="image" />
-            <div class="card-body">
-              <div class="card-title">Asymmetrical Midi Wrap Skirt</div>
-              <div class="card-desc">
-                Elegant high-waisted wrap skirt with a smooth contour waistband.
-                Sizes: S, M, L.
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">$38.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Asymmetrical Midi Wrap Skirt', 38.0)"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
+    <div class="container" id="products">
+        <h2 class="section-title">Collections</h2>
+        <div class="grid" id="productGrid">
+            <!-- Products injected by JS -->
         </div>
-      </section>
 
-      <!-- Shoes Collection -->
-      <section id="shoes">
-        <h2 class="section-title">Shoes Collection</h2>
-        <div class="grid">
-          <div class="card">
-            <div class="card-img">Sneakers Image</div>
-            <div class="card-body">
-              <div class="card-title">Retro Court Low-Top Sneakers</div>
-              <div class="card-desc">
-                Clean leather design offering a sleek look with all-day arch
-                support. Sizes: 7, 8, 9, 10, 11.
-              </div>
+        <!-- Cart Section -->
+        <div class="cart-section" id="cart">
+            <h2 class="section-title">Your Shopping Cart</h2>
+            <div id="cartItems">
+                <p>Your cart is empty.</p>
             </div>
-            <div class="card-footer">
-              <div class="card-price">$68.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Retro Court Low-Top Sneakers', 68.0)"
-              >
-                Add to Cart
-              </button>
+            <div style="margin-top: 1.5rem; font-size: 1.2rem; font-weight: bold;">
+                Total: $<span id="cartTotal">0.00</span>
             </div>
-          </div>
-          <div class="card">
-            <div class="card-img">Loafers Image</div>
-            <div class="card-body">
-              <div class="card-title">Chunky Lug-Sole Loafers</div>
-              <div class="card-desc">
-                Contemporary slip-on dress shoes crafted from soft textured
-                leather. Sizes: 8, 9, 10, 12.
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">$75.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Chunky Lug-Sole Loafers', 75.0)"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
-          <div class="card">
-            <div class="card-img">Heels Image</div>
-            <div class="card-body">
-              <div class="card-title">Strappy Minimalist Block Heels</div>
-              <div class="card-desc">
-                Chic and stable block-heel sandals ideal for evening and daytime
-                events. Sizes: 6, 7, 8, 9.
-              </div>
-            </div>
-            <div class="card-footer">
-              <div class="card-price">$60.00</div>
-              <button
-                class="btn-add"
-                onclick="addToCart('Strappy Minimalist Block Heels', 60.0)"
-              >
-                Add to Cart
-              </button>
-            </div>
-          </div>
         </div>
-      </section>
 
-      <!-- Checkout Section -->
-      <section id="checkout">
-        <div class="checkout-section">
-          <h2 class="section-title" style="border: none; margin-bottom: 1rem">
-            Complete Your Order
-          </h2>
-         <form id="orderForm" action="https://formsubmit.co/abbey4sure16@yahoo.com" method="POST">
-<input type="hidden" name="_subject" value="New Order from The Remix Fashion Store!">
-           <input type="hidden" name="_captcha" value="false">
-            <div class="form-group">
-              <label>Full Name</label>
-              <input type="text" id="name" placeholder="John Doe" required />
-            </div>
-            <div class="form-group">
-              <label>Email Address</label>
-              <input
-                type="email"
-                id="email"
-                placeholder="john@example.com"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label>Phone Number</label>
-              <input
-                type="tel"
-                id="phone"
-                placeholder="+1 (555) 000-0000"
-                required
-              />
-            </div>
-            <div class="form-group">
-              <label>Shipping Address</label>
-              <input
-                type="text"
-                id="address"
-                placeholder="Street, City, Zip Code"
-                required
-              />
-            </div>
-            <button type="submit" class="btn-primary">Submit Order</button>
-          </form>
+        <!-- Checkout Form Section -->
+        <div class="checkout-section" id="checkout">
+            <h2 class="section-title">Complete Your Order</h2>
+            
+            <!-- FormSubmit Integration -->
+            <form id="orderForm" action="https://formsubmit.co/abbey4sure16@yahoo.com" method="POST" onsubmit="prepareCheckout(event)">
+                <input type="hidden" name="_subject" value="New Order from The Remix Fashion Store!">
+                <input type="hidden" name="_captcha" value="false">
+
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="name" name="Full Name" placeholder="John Doe" required />
+                </div>
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="email" name="Email Address" placeholder="john@example.com" required />
+                </div>
+                <div class="form-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="phone" name="Phone Number" placeholder="+1 (555) 000-0000" required />
+                </div>
+                <div class="form-group">
+                    <label>Shipping Address</label>
+                    <input type="text" id="address" name="Shipping Address" placeholder="Street, City, Zip Code" required />
+                </div>
+
+                <!-- Bank Transfer Account Details Box -->
+                <div class="bank-box">
+                    <h4>💳 Payment Instructions (Bank Transfer)</h4>
+                    <p>Please transfer the total order amount to our official account below before submitting:</p>
+                    <p><strong>Bank Name:</strong> Example Bank</p>
+                    <p><strong>Account Number:</strong> 1234567890</p>
+                    <p><strong>Account Name:</strong> Remix Fashion Store</p>
+                    <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">* Your order will be processed once payment is confirmed.</p>
+                </div>
+
+                <button type="submit" class="btn-primary">Submit Order & Send Details</button>
+            </form>
         </div>
-      </section>
     </div>
 
     <footer>
-      <p>&copy; 2026 The Remix Fashion Store. All rights reserved.</p>
+        <p>&copy; 2026 The Remix Fashion Store. All rights reserved.</p>
     </footer>
 
-    <!-- JavaScript functionality -->
     <script>
-      let cart = [];
+        const products = [
+            { name: "Oversized Graphic Hoodie", price: 52.00, image: "remix1.jpeg", desc: "Cozy fleece-lined hoodie featuring a modern streetwear back print." },
+            { name: "Relaxed-Fit Pleated Trousers", price: 45.00, image: "remix2.jpeg", desc: "Versatile stretch-cotton trousers tailored for a relaxed silhouette." },
+            { name: "Asymmetrical Midi Wrap Skirt", price: 38.00, image: "remix3.jpeg", desc: "Elegant high-waisted wrap skirt with a smooth contour waistband." }
+        ];
 
-      function toggleCart() {
-        document.getElementById("cartModal").classList.toggle("open");
-      }
+        let cart = [];
 
-      function scrollToCheckout() {
-        toggleCart();
-        document
-          .getElementById("checkout")
-          .scrollIntoView({ behavior: "smooth" });
-      }
-
-      function addToCart(name, price) {
-        const existingItem = cart.find((item) => item.name === name);
-        if (existingItem) {
-          existingItem.quantity += 1;
-        } else {
-          cart.push({ name, price, quantity: 1 });
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            grid.innerHTML = products.map((p, index) => `
+                <div class="card">
+                    <img src="${p.image}" alt="${p.name}">
+                    <div class="card-content">
+                        <h3>${p.name}</h3>
+                        <p>${p.desc}</p>
+                        <span class="price">$${p.price.toFixed(2)}</span>
+                        <button class="btn-primary" onclick="addToCart(${index})">Add to Cart</button>
+                    </div>
+                </div>
+            `).join('');
         }
-        updateCartUI();
 
-        // Subtle feedback alert
-        alert(`${name} has been added to your cart!`);
-      }
+        function addToCart(index) {
+            const product = products[index];
+            const existing = cart.find(item => item.name === product.name);
+            if (existing) {
+                existing.quantity += 1;
+            } else {
+                cart.push({ ...product, quantity: 1 });
+            }
+            updateCartUI();
+        }
 
-      function removeFromCart(name) {
-        cart = cart.filter((item) => item.name !== name);
-        updateCartUI();
-      }
+        function removeFromCart(name) {
+            cart = cart.filter(item => item.name !== name);
+            updateCartUI();
+        }
 
-      function updateCartUI() {
-        const cartCount = document.getElementById("cart-count");
-        const cartItemsContainer =
-          document.getElementById("cartItemsContainer");
-        const cartTotal = document.getElementById("cartTotal");
+        function updateCartUI() {
+            const cartItems = document.getElementById('cartItems');
+            const cartCount = document.getElementById('cartCount');
+            const cartTotal = document.getElementById('cartTotal');
 
-        let totalCount = 0;
-        let totalPrice = 0;
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p>Your cart is empty.</p>';
+                cartCount.innerText = '0';
+                cartTotal.innerText = '0.00';
+                return;
+            }
 
-        if (cart.length === 0) {
-          cartItemsContainer.innerHTML =
-            '<p style="color: var(--text-muted); text-align: center;">Your cart is empty.</p>';
-        } else {
-          cartItemsContainer.innerHTML = "";
-          cart.forEach((item) => {
-            totalCount += item.quantity;
-            totalPrice += item.price * item.quantity;
+            let totalCount = 0;
+            let totalPrice = 0;
 
-            cartItemsContainer.innerHTML += `
-                        <div class="cart-item">
-                            <div>
-                                <strong>${item.name}</strong><br>
-                                <small>$${item.price.toFixed(2)} x ${item.quantity}</small>
-                            </div>
-                            <button onclick="removeFromCart('${item.name}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove</button>
+            cartItems.innerHTML = cart.map(item => {
+                totalCount += item.quantity;
+                totalPrice += item.price * item.quantity;
+                return `
+                    <div class="cart-item">
+                        <div>
+                            <strong>${item.name}</strong><br>
+                            <small>$${item.price.toFixed(2)} x ${item.quantity}</small>
                         </div>
-                    `;
-          });
+                        <button onclick="removeFromCart('${item.name}')" style="background:#ef4444; color:white; border:none; padding:4px 8px; border-radius:4px; cursor:pointer;">Remove</button>
+                    </div>
+                `;
+            }).join('');
+
+            cartCount.innerText = totalCount;
+            cartTotal.innerText = totalPrice.toFixed(2);
         }
 
-        cartCount.innerText = totalCount;
-        cartTotal.innerText = `$${totalPrice.toFixed(2)}`;
-      }
+        function prepareCheckout(event) {
+            if (cart.length === 0) {
+                event.preventDefault();
+                alert("Your cart is empty! Please add items before checking out.");
+                return;
+            }
 
-      function handleCheckout(event) {
-    if (cart.length === 0) {
-        event.preventDefault();
-        alert("Your cart is empty! Please add items before checking out.");
-        return;
-    }
+            // Create cart summary text
+            let cartSummary = cart.map(item => `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
+            let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
 
-    // This creates a neat text summary of everything in their cart and adds it as a hidden field before submitting
-    let cartSummary = cart.map(item => `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
-    let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
+            // Inject the summary into a hidden input so FormSubmit emails it to you
+            let hiddenInput = document.createElement('input');
+            hiddenInput.type = 'hidden';
+            hiddenInput.name = 'Order Summary';
+            hiddenInput.value = `${cartSummary}\n\nTotal Price: $${totalAmount}`;
+            document.getElementById('orderForm').appendChild(hiddenInput);
+        }
 
-    // Create a hidden input dynamically to send the cart items to your email
-    let hiddenInput = document.createElement('input');
-    hiddenInput.type = 'hidden';
-    hiddenInput.name = 'Order Summary';
-    hiddenInput.value = `${cartSummary}\n\nTotal Price: $${totalAmount}`;
-    document.getElementById('orderForm').appendChild(hiddenInput);
-}
-
-        const name = document.getElementById("name").value;
-        alert(
-          `Thank you for your order, ${name}! Your purchase from The Remix Fashion Store has been successfully placed.`,
-        );
-
-        // Reset form and cart
-        cart = [];
-        updateCartUI();
-        document.getElementById("orderForm").reset();
-      }
+        renderProducts();
     </script>
-  </body>
+</body>
 </html>
