@@ -27,7 +27,7 @@
         .btn-primary:hover { background: #374151; }
         
         /* Cart & Checkout Section */
-        .cart-section, .checkout-section { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 3rem; }
+        .cart-section, .checkout-section, .contact-section { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.05); margin-bottom: 3rem; }
         .cart-item { display: flex; justify-content: space-between; align-items: center; padding: 0.75rem 0; border-bottom: 1px solid #e5e7eb; }
         .form-group { margin-bottom: 1rem; }
         .form-group label { display: block; font-weight: 600; margin-bottom: 0.25rem; font-size: 0.9rem; }
@@ -37,6 +37,13 @@
         .bank-box { background: #f3f4f6; border-left: 4px solid #111827; padding: 1rem; margin-bottom: 1.5rem; border-radius: 4px; }
         .bank-box h4 { margin-bottom: 0.5rem; color: #111827; }
         .bank-box p { font-size: 0.95rem; color: #374151; margin-bottom: 0.25rem; }
+
+        /* Contact Grid Styling */
+        .contact-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; text-align: center; }
+        .contact-card { background: #f3f4f6; padding: 1.25rem; border-radius: 6px; text-decoration: none; color: #1f2937; transition: background 0.2s; }
+        .contact-card:hover { background: #e5e7eb; }
+        .contact-card h4 { margin-bottom: 0.25rem; font-size: 1.1rem; color: #111827; }
+        .contact-card p { font-size: 0.9rem; color: #4b5563; }
 
         footer { background: #111827; color: white; text-align: center; padding: 1.5rem; margin-top: 4rem; font-size: 0.9rem; }
     </style>
@@ -49,6 +56,7 @@
             <a href="#products">Shop</a>
             <a href="#cart">Cart (<span id="cartCount">0</span>)</a>
             <a href="#checkout">Checkout</a>
+            <a href="#contact">Contact</a>
         </nav>
     </header>
 
@@ -58,7 +66,7 @@
     </div>
 
     <div class="container" id="products">
-        <h2 class="section-title">Collections</h2>
+        <h2 class="section-title">Featured Collections</h2>
         <div class="grid" id="productGrid">
             <!-- Products injected by JS -->
         </div>
@@ -78,7 +86,6 @@
         <div class="checkout-section" id="checkout">
             <h2 class="section-title">Complete Your Order</h2>
             
-            <!-- FormSubmit Integration -->
             <form id="orderForm" action="https://formsubmit.co/abbey4sure16@yahoo.com" method="POST" onsubmit="prepareCheckout(event)">
                 <input type="hidden" name="_subject" value="New Order from The Remix Fashion Store!">
                 <input type="hidden" name="_captcha" value="false">
@@ -104,14 +111,37 @@
                 <div class="bank-box">
                     <h4>💳 Payment Instructions (Bank Transfer)</h4>
                     <p>Please transfer the total order amount to our official account below before submitting:</p>
-                    <p><strong>Bank Name:</strong> Access Bank</p>
-                    <p><strong>Account Number:</strong> 0057750440</p>
+                    <p><strong>Bank Name:</strong> Example Bank</p>
+                    <p><strong>Account Number:</strong> 1234567890</p>
                     <p><strong>Account Name:</strong> Remix Fashion Store</p>
                     <p style="font-size: 0.85rem; color: #6b7280; margin-top: 0.5rem;">* Your order will be processed once payment is confirmed.</p>
                 </div>
 
                 <button type="submit" class="btn-primary">Submit Order & Send Details</button>
             </form>
+        </div>
+
+        <!-- Contact Us Section -->
+        <div class="contact-section" id="contact">
+            <h2 class="section-title">Get in Touch</h2>
+            <div class="contact-grid">
+                <a href="https://wa.me/2348000000000" target="_blank" class="contact-card">
+                    <h4>💬 WhatsApp</h4>
+                    <p>Chat with us</p>
+                </a>
+                <a href="tel:+2348000000000" class="contact-card">
+                    <h4>📞 Phone Call</h4>
+                    <p>+234 800 000 0000</p>
+                </a>
+                <a href="https://instagram.com/theremixfashion" target="_blank" class="contact-card">
+                    <h4>📸 Instagram</h4>
+                    <p>@theremixfashion</p>
+                </a>
+                <a href="https://facebook.com/theremixfashion" target="_blank" class="contact-card">
+                    <h4>📘 Facebook</h4>
+                    <p>The Remix Fashion</p>
+                </a>
+            </div>
         </div>
     </div>
 
@@ -199,11 +229,9 @@
                 return;
             }
 
-            // Create cart summary text
             let cartSummary = cart.map(item => `${item.name} (x${item.quantity}) - $${(item.price * item.quantity).toFixed(2)}`).join('\n');
             let totalAmount = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0).toFixed(2);
 
-            // Inject the summary into a hidden input so FormSubmit emails it to you
             let hiddenInput = document.createElement('input');
             hiddenInput.type = 'hidden';
             hiddenInput.name = 'Order Summary';
